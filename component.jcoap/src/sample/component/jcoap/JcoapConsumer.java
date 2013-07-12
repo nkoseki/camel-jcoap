@@ -1,6 +1,9 @@
 package sample.component.jcoap;
 
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -15,6 +18,7 @@ import org.ws4d.coap.interfaces.CoapServer;
 import org.ws4d.coap.interfaces.CoapServerChannel;
 import org.ws4d.coap.messages.CoapMediaType;
 import org.ws4d.coap.messages.CoapResponseCode;
+
 
 
 
@@ -33,6 +37,7 @@ public class JcoapConsumer extends DefaultConsumer implements CoapServer{
 		this.endpoint = endpoint;
 		this.processor = processor;
 		LOG.debug("JcoapConsumer called");
+		
 	}
 
 	/**
@@ -45,11 +50,9 @@ public class JcoapConsumer extends DefaultConsumer implements CoapServer{
 		
         System.out.println("Start CoAP Server on port " + PORT);
 
-
         CoapChannelManager channelManager = BasicCoapChannelManager.getInstance();
         channelManager.createServerListener(this, PORT);
-        
-
+        super.doStart();
 	}
 
 	@Override
@@ -65,13 +68,12 @@ public class JcoapConsumer extends DefaultConsumer implements CoapServer{
 		System.out.println("Received message: " + request.toString()+ " URI: " + request.getUriPath());
 		//////////////////////////////////////////////////////////
 		Exchange exchange = endpoint.createExchange();
-		String val1 = endpoint.getKey1();
-		String val2 = endpoint.getKey2();
-		String val3 = endpoint.getKey3();
-		String props = "PROPERTIES: " + val1 + ", " + val2 + ", " + val3;
+//		String val1 = endpoint.getKey1();
+//		String val2 = endpoint.getKey2();
+//		String val3 = endpoint.getKey3();
+//		String props = "PROPERTIES: " + val1 + ", " + val2 + ", " + val3;
 		
-		exchange.getIn().setBody(request.toString() + ">>>>" + props + "<<<<");
-		
+		exchange.getIn().setBody(request);
 		
 		try{
 				getProcessor().process(exchange);
@@ -83,12 +85,15 @@ public class JcoapConsumer extends DefaultConsumer implements CoapServer{
 						exchange, exchange.getException());
 			}
 		}
+		LOG.debug("-------------exchange: " + exchange.getIn().getBody(String.class));
+		String resultMessage = exchange.getIn().getBody(String.class);
 		//////////////////////////////////////////////////////////
 		CoapMessage response = channel.createResponse(request,
 				CoapResponseCode.Content_205);
 		response.setContentType(CoapMediaType.text_plain);
 		
-		response.setPayload("payload...".getBytes());
+		//response.setPayload("payload...".getBytes());
+		response.setPayload(resultMessage.getBytes());
 		
 		if (request.getObserveOption() != null){
 			System.out.println("Client wants to observe this resource.");
