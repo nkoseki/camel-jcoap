@@ -11,33 +11,13 @@ public class JcoapEndpoint  extends DefaultEndpoint{
 
 	private static final transient Log LOG = LogFactory.getLog(JcoapEndpoint.class);
 	
-	private String key1;
-	private String key2;
-	private String key3;
-	
-	public String getKey1() {
-		return key1;
-	}
-
-	public void setKey1(String key1) {
-		this.key1 = key1;
-	}
-
-	public String getKey2() {
-		return key2;
-	}
-
-	public void setKey2(String key2) {
-		this.key2 = key2;
-	}
-
-	public String getKey3() {
-		return key3;
-	}
-
-	public void setKey3(String key3) {
-		this.key3 = key3;
-	}
+	private String ContentType;
+	private String Token;
+	private String UriHost;
+	private String UriPort;
+	private String UriPath;
+	private String UriQuery;
+	private String ProxyUri;
 
 	public JcoapEndpoint(){
 		
@@ -56,8 +36,63 @@ public class JcoapEndpoint  extends DefaultEndpoint{
 
 	@Override
 	public Producer createProducer() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return new JcoapProducer(this);
+	}
+
+	public String getContentType() {
+		return ContentType;
+	}
+
+	public void setContentType(String contentType) {
+		ContentType = contentType;
+	}
+
+	public String getToken() {
+		return Token;
+	}
+
+	public void setToken(String token) {
+		Token = token;
+	}
+
+	public String getUriHost() {
+		return UriHost;
+	}
+
+	public void setUriHost(String uriHost) {
+		UriHost = uriHost;
+	}
+
+	public String getUriPort() {
+		return UriPort;
+	}
+
+	public void setUriPort(String uriPort) {
+		UriPort = uriPort;
+	}
+
+	public String getUriPath() {
+		return UriPath;
+	}
+
+	public void setUriPath(String uriPath) {
+		UriPath = uriPath;
+	}
+
+	public String getUriQuery() {
+		return UriQuery;
+	}
+
+	public void setUriQuery(String uriQuery) {
+		UriQuery = uriQuery;
+	}
+
+	public String getProxyUri() {
+		return ProxyUri;
+	}
+
+	public void setProxyUri(String proxyUri) {
+		ProxyUri = proxyUri;
 	}
 
 	@Override

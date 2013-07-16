@@ -29,7 +29,7 @@ public class JcoapConsumer extends DefaultConsumer implements CoapServer{
 	private JcoapEndpoint endpoint;
 	private Processor processor;
 	
-	private static final int PORT = 5683;
+	private static int PORT = 5683;
     static int counter = 0;
     
 	public JcoapConsumer(JcoapEndpoint endpoint, Processor processor) {
@@ -56,36 +56,23 @@ public class JcoapConsumer extends DefaultConsumer implements CoapServer{
 	}
 
 	@Override
-	public CoapServer onAccept(CoapRequest request) {
-		LOG.debug("********** BasicCoapServer#onAccept called");
-		System.out.println("Accept connection...");
-		return this;
-	}
-
-	@Override
 	public void onRequest(CoapServerChannel channel, CoapRequest request) {
 		LOG.debug("*********** BasicCoapServer#onRequest called");
 		System.out.println("Received message: " + request.toString()+ " URI: " + request.getUriPath());
 		//////////////////////////////////////////////////////////
 		Exchange exchange = endpoint.createExchange();
 //		String val1 = endpoint.getKey1();
-//		String val2 = endpoint.getKey2();
-//		String val3 = endpoint.getKey3();
-//		String props = "PROPERTIES: " + val1 + ", " + val2 + ", " + val3;
 		
 		exchange.getIn().setBody(request);
 		
 		try{
-				getProcessor().process(exchange);
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			if(exchange.getException()!= null){
-				getExceptionHandler().handleException("-------Error processing exchange", 
-						exchange, exchange.getException());
-			}
+			getProcessor().process(exchange);
+		}catch(Exception e){   
+			getExceptionHandler().handleException("Error processing exchange" , exchange, e);   
+			return;
 		}
-		LOG.debug("-------------exchange: " + exchange.getIn().getBody(String.class));
+		
+		//reply logic
 		String resultMessage = exchange.getIn().getBody(String.class);
 		//////////////////////////////////////////////////////////
 		CoapMessage response = channel.createResponse(request,
@@ -104,8 +91,15 @@ public class JcoapConsumer extends DefaultConsumer implements CoapServer{
 	}
 
 	@Override
+	public CoapServer onAccept(CoapRequest request) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
 	public void onSeparateResponseFailed(CoapServerChannel channel) {
-		System.out.println("Separate response transmission failed.");
+		// TODO Auto-generated method stub
+		
 	}
 
 }
