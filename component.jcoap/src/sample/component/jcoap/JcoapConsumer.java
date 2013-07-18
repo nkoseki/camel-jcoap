@@ -55,6 +55,10 @@ public class JcoapConsumer extends DefaultConsumer implements CoapServer{
         super.doStart();
 	}
 
+	protected void doStop() throws Exception{
+		super.doStop();
+	}
+	
 	@Override
 	public void onRequest(CoapServerChannel channel, CoapRequest request) {
 		LOG.debug("*********** BasicCoapServer#onRequest called");
@@ -92,13 +96,13 @@ public class JcoapConsumer extends DefaultConsumer implements CoapServer{
 
 	@Override
 	public CoapServer onAccept(CoapRequest request) {
-		// TODO Auto-generated method stub
-		return null;
+		LOG.debug("onAccept called");
+		return this;
 	}
 
 	@Override
 	public void onSeparateResponseFailed(CoapServerChannel channel) {
-		// TODO Auto-generated method stub
+		LOG.debug("Separate response transmission failed.");
 		
 	}
 

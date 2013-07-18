@@ -2,6 +2,7 @@ package sample.component.jcoap;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Map;
 
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
@@ -45,7 +46,13 @@ public class JcoapProducer extends DefaultProducer implements CoapClient{
 		super.doStart();
 	}
 	
-	
+	@Override
+	protected void doStop() throws Exception {
+		//実装が必要?
+		super.doStop();
+	}
+
+	//コンポーネント起動時に一度だけ呼ばれる
 	synchronized private void connect() {
 		
 		if(endpoint.getUriHost() != null){
@@ -76,9 +83,19 @@ public class JcoapProducer extends DefaultProducer implements CoapClient{
 		}
 	}
 
+	//イベント発生時に毎回呼ばれる
 	@Override
 	public void process(Exchange exchange) throws Exception {
+		//dostartで設定した値を上書きして送信する
+		Map headers = exchange.getIn().getHeaders();
+		if(headers.get("uriPath") != null){
+			coapRequest.setUriPath((String)headers.get("uriPath"));
+		}
+		if(headers.get("riQuery") != null){
+			coapRequest.setUriQuery("uriQuery");
+		}
 		
+		//メッセージ送信
 		clientChannel.sendMessage(coapRequest);
 	}
 
