@@ -91,7 +91,7 @@ public class JcoapProducer extends DefaultProducer implements CoapClient{
 		if(headers.get("uriPath") != null){
 			coapRequest.setUriPath((String)headers.get("uriPath"));
 		}
-		if(headers.get("riQuery") != null){
+		if(headers.get("uriQuery") != null){
 			coapRequest.setUriQuery("uriQuery");
 		}
 		

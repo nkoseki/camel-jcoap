@@ -53,9 +53,11 @@ public class JcoapConsumer extends DefaultConsumer implements CoapServer{
         CoapChannelManager channelManager = BasicCoapChannelManager.getInstance();
         channelManager.createServerListener(this, PORT);
         super.doStart();
+        
 	}
 
 	protected void doStop() throws Exception{
+		LOG.debug("doStop() Called");
 		super.doStop();
 	}
 	
@@ -83,7 +85,7 @@ public class JcoapConsumer extends DefaultConsumer implements CoapServer{
 				CoapResponseCode.Content_205);
 		response.setContentType(CoapMediaType.text_plain);
 		
-		//response.setPayload("payload...".getBytes());
+		
 		response.setPayload(resultMessage.getBytes());
 		
 		if (request.getObserveOption() != null){
